@@ -10,4 +10,4 @@ set(HEADERS
     server.h
 )
 
-add_executable(server ${SOURCES} ${HEADERS})
+add_executable(shttp ${SOURCES} ${HEADERS})
