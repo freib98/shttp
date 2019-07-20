@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Method Description:
+// - Prints a help message to the stdout stream and exits the program
 void print_help()
 {
     fprintf(stdout, "Usage: shttp [port]\n");
@@ -14,6 +16,11 @@ void print_help()
     exit(0);
 }
 
+// Method Description:
+// - Validates all arguments
+// Arguments:
+// - argc: the number of arguments
+// - argv: pointer to the arguments
 int validate_args(int argc, char** argv)
 {
     if (argc != 2)
@@ -25,6 +32,12 @@ int validate_args(int argc, char** argv)
     return 0;
 }
 
+// Method Description:
+// - Parses the port string to a 16 bit int value. If the value
+//      is invalid or the value is greater than a 16 bit int can
+//      hold, it throws a error
+// Arguments:
+// - port_arg: the to be parsed port
 uint16_t port_arg_to_uint16(const char* port_arg)
 {
     char* port_arg_nptr;
