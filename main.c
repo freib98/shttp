@@ -6,11 +6,14 @@
 
 void print_help()
 {
-    printf("Test\n");
+    printf("Usage: shttp [port]\n");
+    printf("\n");
+    printf("Options\n");
+    printf("-h --help           Display usage\n");
     exit(0);
 }
 
-int validate_args(int argc, char **argv)
+int validate_args(int argc, char** argv)
 {
     if (argc != 2)
     {
@@ -21,9 +24,9 @@ int validate_args(int argc, char **argv)
     return 0;
 }
 
-uint16_t port_arg_to_uint16(const char *port_arg)
+uint16_t port_arg_to_uint16(const char* port_arg)
 {
-    char *port_arg_nptr;
+    char* port_arg_nptr;
     unsigned long int port = strtoul(port_arg, &port_arg_nptr, 10);
 
     if (*port_arg_nptr != '\0')
@@ -41,7 +44,7 @@ uint16_t port_arg_to_uint16(const char *port_arg)
     return (uint16_t)port;
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     if (argc == 2 && (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0))
     {
