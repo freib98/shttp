@@ -6,10 +6,10 @@
 
 void print_help()
 {
-    printf("Usage: shttp [port]\n");
-    printf("\n");
-    printf("Options\n");
-    printf("-h --help           Display usage\n");
+    fprintf(stdout, "Usage: shttp [port]\n");
+    fprintf(stdout, "\n");
+    fprintf(stdout, "Options\n");
+    fprintf(stdout, "-h\x1b[10CDisplay usage\n");
     exit(0);
 }
 
