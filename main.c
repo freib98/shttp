@@ -1,4 +1,5 @@
 #include "server.h"
+#include "logger.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,7 +18,7 @@ int validate_args(int argc, char** argv)
 {
     if (argc != 2)
     {
-        printf("Usage: %s {portnumber}\n", argv[0]);
+        fprintf(stdout, "Usage: %s {portnumber}\n", argv[0]);
         exit(0);
     }
 
@@ -31,13 +32,13 @@ uint16_t port_arg_to_uint16(const char* port_arg)
 
     if (*port_arg_nptr != '\0')
     {
-        printf("Invalid Port");
+        log_error("Invalid Port");
         exit(0);
     }
 
     if (port > UINT16_MAX)
     {
-        printf("Port is not in range");
+        log_error("Port is not in range");
         exit(0);
     }
 

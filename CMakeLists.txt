@@ -4,10 +4,12 @@ project(shttp)
 set(SOURCES
     main.c
     server.c
+    logger.c
 )
 
 set(HEADERS
     server.h
+    logger.h
 )
 
 add_executable(shttp ${SOURCES} ${HEADERS})
