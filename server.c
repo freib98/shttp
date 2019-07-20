@@ -1,8 +1,15 @@
 #include "server.h"
 
-#include <stdio.h>
+#include "logger.h"
+
+void initialize_server(uint16_t port)
+{
+}
 
 void run_server(uint16_t port)
 {
-    printf("Working\n");
+}
+
+void stop_server()
+{
 }
