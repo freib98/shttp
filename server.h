@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-void initialize_server(uint16_t port);
+void _initialize_server(uint16_t port);
 
 void run_server(uint16_t port);
 
