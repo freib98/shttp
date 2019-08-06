@@ -8,10 +8,12 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <stdio.h>
+
 int listenfd;
 int connfd;
 
-void _initialize_server(uint16_t port)
+int _initialize_server(uint16_t port)
 {
     struct sockaddr_in connection_socket_addr;
     memset(&connection_socket_addr, 0, sizeof(connection_socket_addr));
@@ -22,17 +24,24 @@ void _initialize_server(uint16_t port)
     if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     {
         log_error("Could not create listen socket");
+        return SERVER_ERROR;
     }
 
     if (bind(listenfd, (struct sockaddr*)&connection_socket_addr, sizeof(connection_socket_addr)) == -1)
     {
         log_error("Could not bind socket to port");
+        return SERVER_ERROR;
     }
+
+    return SERVER_SUCCESS;
 }
 
-void run_server(uint16_t port)
+int run_server(uint16_t port)
 {
-    _initialize_server(port);
+    if (_initialize_server(port) == SERVER_ERROR)
+    {
+        return SERVER_ERROR;
+    }
 
     if (listen(listenfd, 10) == -1)
     {
@@ -62,7 +71,7 @@ void run_server(uint16_t port)
             while (len > 0 && strcmp("\n", buf))
             {
                 len = get_line(connfd, buf, sizeof(buf));
-                log_error(buf);
+                printf("%s", buf);
             }
 
             break;
