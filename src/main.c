@@ -9,10 +9,10 @@
 // - Prints a help message to the stdout stream and exits the program
 void print_help()
 {
-    fprintf(stdout, "Usage: shttp [port]\n");
-    fprintf(stdout, "\n");
-    fprintf(stdout, "Options\n");
-    fprintf(stdout, "-h\x1b[10CDisplay usage\n");
+    printf("Usage: shttp [port]\n");
+    printf("\n");
+    printf("Options\n");
+    printf("-h\x1b[10CDisplay usage\n");
     exit(0);
 }
 
