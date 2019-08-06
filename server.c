@@ -55,13 +55,14 @@ int run_server(uint16_t port)
         if ((connfd = accept(listenfd, &client_addr, &client_addr_len)) == -1)
         {
             log_error("Could not accept an incomming connection");
+            return SERVER_ERROR;
         }
 
         switch (fork())
         {
         case -1: // Error while forking
             log_error("Could not create a child process for a incomming connection");
-            break;
+            return SERVER_ERROR;
 
         case 0: // Child process
         {
@@ -72,6 +73,15 @@ int run_server(uint16_t port)
             {
                 len = get_line(connfd, buf, sizeof(buf));
                 printf("%s", buf);
+            }
+
+            char response[1024];
+            strcpy(response, "HTTP/1.0 200 OK\r\nServer: shttp\r\nContent-Type: text/html\r\n\r\nHello World!");
+            send(connfd, response, strlen(response), 0);
+
+            if (close(connfd) == -1)
+            {
+                log_error("Could not close the connection socket");
             }
 
             break;
