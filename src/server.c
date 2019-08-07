@@ -69,11 +69,11 @@ int run_server(uint16_t port)
             char buf[1024];
             int len;
 
-            while (len > 0 && strcmp("\n", buf))
+            do
             {
                 len = get_line(connfd, buf, sizeof(buf));
                 printf("%s", buf);
-            }
+            } while (len > 0 && strcmp("\n", buf));
 
             char response[1024];
             strcpy(response, "HTTP/1.0 200 OK\r\nServer: shttp\r\nContent-Type: text/html\r\n\r\nHello World!");
