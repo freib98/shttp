@@ -34,8 +34,8 @@ int validate_args(int argc, char** argv)
 
 // Method Description:
 // - Parses the port string to a 16 bit int value. If the value
-//      is invalid or the value is greater than a 16 bit int can
-//      hold, it throws a error
+//   is invalid or the value is greater than a 16 bit int can
+//   hold, it throws a error
 // Arguments:
 // - port_arg: the to be parsed port
 uint16_t port_arg_to_uint16(const char* port_arg)

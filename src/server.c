@@ -13,6 +13,10 @@
 int listenfd;
 int connfd;
 
+// Method Description:
+// - Creating and configurating the socket
+// Arguments:
+// - port: the port to configure the socket
 int _initialize_server(uint16_t port)
 {
     struct sockaddr_in connection_socket_addr;
@@ -36,6 +40,12 @@ int _initialize_server(uint16_t port)
     return SERVER_SUCCESS;
 }
 
+// Method Description:
+// - This is the main routine of the server. It initializes the
+//   socket, listens for connections, accepts them and sends
+//   a response
+// Arguments:
+// - port: the port the socket is listening on
 int run_server(uint16_t port)
 {
     if (_initialize_server(port) == SERVER_ERROR)
@@ -97,6 +107,13 @@ void stop_server()
 {
 }
 
+// Method Description:
+// - Reads a line from the socket and returns it as zero
+//   terminated string.
+// Arguments:
+// - sock: the socket where the messages are receved from
+// - buf: a pointer the the zero terminated result
+// - size: the size of the zero terminated result
 int get_line(int sock, char* buf, int size)
 {
     int i = 0;
