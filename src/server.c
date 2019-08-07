@@ -8,8 +8,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <stdio.h>
-
 int listenfd;
 int connfd;
 
@@ -25,12 +23,14 @@ int _initialize_server(uint16_t port)
     connection_socket_addr.sin_port = htons(port);
     connection_socket_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
+    log_debug("Creating the listening socket");
     if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     {
         log_error("Could not create listen socket");
         return SERVER_ERROR;
     }
 
+    log_debug("Binding the listening socket to the port");
     if (bind(listenfd, (struct sockaddr*)&connection_socket_addr, sizeof(connection_socket_addr)) == -1)
     {
         log_error("Could not bind socket to port");
@@ -62,6 +62,8 @@ int run_server(uint16_t port)
     {
         struct sockaddr client_addr;
         socklen_t client_addr_len;
+
+        log_debug("The server is listening");
         if ((connfd = accept(listenfd, &client_addr, &client_addr_len)) == -1)
         {
             log_error("Could not accept an incomming connection");
@@ -82,7 +84,8 @@ int run_server(uint16_t port)
             do
             {
                 len = get_line(connfd, buf, sizeof(buf));
-                printf("%s", buf);
+                // printf("%s", buf);
+                log_debug(buf);
             } while (len > 0 && strcmp("\n", buf));
 
             char response[1024];
