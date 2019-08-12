@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -34,7 +35,7 @@ int run_server(uint16_t port)
         struct sockaddr client_addr;
         socklen_t client_addr_len;
 
-        log_debug("The server is listening");
+        log_debug("Listening for connections...");
         if ((connfd = accept(listenfd, &client_addr, &client_addr_len)) == -1)
         {
             log_error("Could not accept an incomming connection");
@@ -70,6 +71,7 @@ int run_server(uint16_t port)
                 strcpy(response, "HTTP/1.0 505 HTTP Version not supported\r\nServer: shttp\r\nContent-Type: text/html\r\n\r\nThis http server just allows http 1.0 requests");
             }
 
+            log_debug("Sending response:\n%s", response);
             send(connfd, response, strlen(response), 0);
 
             // Close connection socket
@@ -78,10 +80,22 @@ int run_server(uint16_t port)
                 log_error("Could not close the connection socket");
             }
 
+            connfd = 0;
+
+            log_debug("Closed connection");
+
+            exit(0);
             break;
         }
 
         default:
+            if (close(connfd) == -1)
+            {
+                log_error("Could not close the connection socket");
+            }
+
+            connfd = 0;
+
             break;
         }
     }

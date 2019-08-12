@@ -67,5 +67,6 @@ int main(int argc, char** argv)
 
     validate_args(argc, argv);
 
-    run_server(port_arg_to_uint16(argv[1]));
+    uint16_t port = port_arg_to_uint16(argv[1]);
+    run_server(port);
 }
