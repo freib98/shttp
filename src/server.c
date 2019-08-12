@@ -106,12 +106,12 @@ int initialize_server(uint16_t port)
         return SERVER_ERROR;
     }
 
-    log_debug("Binding the listening socket to the port");
     if (bind(listenfd, (struct sockaddr*)&connection_socket_addr, sizeof(connection_socket_addr)) == -1)
     {
         log_error("Could not bind socket to port");
         return SERVER_ERROR;
     }
+    log_debug("The server is listening on port %u", port);
 
     return SERVER_SUCCESS;
 }
@@ -158,6 +158,8 @@ int receive_request(struct request* request)
         len = get_line(connfd, buf, buf_len);
         log_debug(buf);
     }
+
+    return SERVER_SUCCESS;
 }
 
 // Method Description:
