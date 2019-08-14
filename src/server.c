@@ -55,7 +55,7 @@ int run_server(uint16_t port)
 
             char response[1024];
 
-            if (request.http_major_version == 1 && request.http_minor_version == 0)
+            if (request.version.major == 1 && request.version.major == 0)
             {
                 if (request.method == GET)
                 {
@@ -155,6 +155,13 @@ void stop_server()
     }
 }
 
+// Method Description:
+// - Receives the request and extracts the method,
+//   the url and the http version. The request headers
+//   and the body is currently ignored
+// Arguments:
+// - request: returns the request method, url and
+//   the http version
 int receive_request(struct request* request)
 {
     char buf[1024];
@@ -185,7 +192,7 @@ int receive_request(struct request* request)
 
     // HTTP VERSION
     token = strtok(NULL, " ");
-    sscanf(token, "HTTP/%u.%u", &request->http_major_version, &request->http_minor_version);
+    sscanf(token, "HTTP/%u.%u", &request->version.major, &request->version.minor);
 
     // Just read the rest of the request
     while (len > 0 && strcmp("\n", buf))

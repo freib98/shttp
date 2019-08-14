@@ -15,12 +15,17 @@ enum request_method
     GET
 };
 
+struct http_version
+{
+    int major;
+    int minor;
+};
+
 struct request
 {
     enum request_method method;
     char url[1024];
-    int http_major_version;
-    int http_minor_version;
+    struct http_version version;
 };
 
 int run_server(uint16_t port);
