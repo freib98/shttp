@@ -79,7 +79,6 @@ int run_server(uint16_t port)
             {
                 log_error("Could not close the connection socket");
             }
-
             connfd = 0;
 
             log_debug("Closed connection");
@@ -93,7 +92,6 @@ int run_server(uint16_t port)
             {
                 log_error("Could not close the connection socket");
             }
-
             connfd = 0;
 
             break;
@@ -130,8 +128,31 @@ int initialize_server(uint16_t port)
     return SERVER_SUCCESS;
 }
 
+// Method Description:
+// - Closing all active sockets.
 void stop_server()
 {
+    if (listenfd != 0)
+    {
+        if (close(listenfd) == -1)
+        {
+            log_error("Could not close the listening socket");
+        }
+        connfd = 0;
+
+        log_debug("Closed the listening socket");
+    }
+
+    if (connfd != 0)
+    {
+        if (close(connfd) == -1)
+        {
+            log_error("Could not close the connection socket");
+        }
+        connfd = 0;
+
+        log_debug("Closed the connection socket");
+    }
 }
 
 int receive_request(struct request* request)

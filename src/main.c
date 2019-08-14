@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 
 // Method Description:
 // - Prints a help message to the stdout stream and exits the program
@@ -64,6 +65,8 @@ int main(int argc, char** argv)
     {
         print_help();
     }
+
+    signal(SIGINT, stop_server);
 
     validate_args(argc, argv);
 
