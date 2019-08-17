@@ -35,7 +35,7 @@ int run_server(uint16_t port)
         struct sockaddr client_addr;
         socklen_t client_addr_len;
 
-        log_debug("Listening for connections...");
+        log_info("Listening for connections...");
         if ((connfd = accept(listenfd, &client_addr, &client_addr_len)) == -1)
         {
             log_error("Could not accept an incomming connection");
@@ -71,7 +71,7 @@ int run_server(uint16_t port)
                 strcpy(response, "HTTP/1.0 505 HTTP Version not supported\r\nServer: shttp\r\nContent-Type: text/html\r\n\r\nThis http server just allows http 1.0 requests");
             }
 
-            log_debug("Sending response:\n%s", response);
+            log_info("Sending response:\n%s", response);
             send(connfd, response, strlen(response), 0);
 
             // Close connection socket
@@ -81,7 +81,7 @@ int run_server(uint16_t port)
             }
             connfd = 0;
 
-            log_debug("Closed connection");
+            log_info("Closed connection");
 
             exit(0);
             break;
@@ -111,7 +111,7 @@ int initialize_server(uint16_t port)
     connection_socket_addr.sin_port = htons(port);
     connection_socket_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    log_debug("Creating the listening socket");
+    log_info("Creating the listening socket");
     if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     {
         log_error("Could not create listen socket");
@@ -123,7 +123,7 @@ int initialize_server(uint16_t port)
         log_error("Could not bind socket to port");
         return SERVER_ERROR;
     }
-    log_debug("The server is listening on port %u", port);
+    log_info("The server is listening on port %u", port);
 
     return SERVER_SUCCESS;
 }
@@ -140,7 +140,7 @@ void stop_server()
         }
         connfd = 0;
 
-        log_debug("Closed the listening socket");
+        log_info("Closed the listening socket");
     }
 
     if (connfd != 0)
@@ -151,7 +151,7 @@ void stop_server()
         }
         connfd = 0;
 
-        log_debug("Closed the connection socket");
+        log_info("Closed the connection socket");
     }
 }
 
@@ -198,7 +198,7 @@ int receive_request(struct request* request)
     while (len > 0 && strcmp("\n", buf))
     {
         len = get_line(connfd, buf, buf_len);
-        log_debug(buf);
+        log_info(buf);
     }
 
     return SERVER_SUCCESS;
