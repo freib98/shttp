@@ -46,13 +46,13 @@ uint16_t port_arg_to_uint16(const char* port_arg)
 
     if (*port_arg_nptr != '\0')
     {
-        log_error("Invalid Port");
+        log_errorf("Invalid Port");
         exit(0);
     }
 
     if (port > UINT16_MAX)
     {
-        log_error("Port is not in range");
+        log_errorf("Port is not in range");
         exit(0);
     }
 

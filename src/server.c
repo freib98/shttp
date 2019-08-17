@@ -27,7 +27,7 @@ int run_server(uint16_t port)
 
     if (listen(listenfd, 10) == -1)
     {
-        log_error("Could not start listen on socket");
+        log_errorf("Could not start listen on socket");
     }
 
     while (1)
@@ -35,17 +35,17 @@ int run_server(uint16_t port)
         struct sockaddr client_addr;
         socklen_t client_addr_len;
 
-        log_info("Listening for connections...");
+        log_infof("Listening for connections...");
         if ((connfd = accept(listenfd, &client_addr, &client_addr_len)) == -1)
         {
-            log_error("Could not accept an incomming connection");
+            log_errorf("Could not accept an incomming connection");
             return SERVER_ERROR;
         }
 
         switch (fork())
         {
         case -1: // Error while forking
-            log_error("Could not create a child process for a incomming connection");
+            log_errorf("Could not create a child process for a incomming connection");
             return SERVER_ERROR;
 
         case 0: // Child process
@@ -71,17 +71,20 @@ int run_server(uint16_t port)
                 strcpy(response, "HTTP/1.0 505 HTTP Version not supported\r\nServer: shttp\r\nContent-Type: text/html\r\n\r\nThis http server just allows http 1.0 requests");
             }
 
-            log_info("Sending response:\n%s", response);
+            log_infof("Sending response:", response);
+            log_block();
+            log_info(response, strlen(response));
+            log_block_end();
             send(connfd, response, strlen(response), 0);
 
             // Close connection socket
             if (close(connfd) == -1)
             {
-                log_error("Could not close the connection socket");
+                log_errorf("Could not close the connection socket");
             }
             connfd = 0;
 
-            log_info("Closed connection");
+            log_infof("Closed connection");
 
             exit(0);
             break;
@@ -90,7 +93,7 @@ int run_server(uint16_t port)
         default:
             if (close(connfd) == -1)
             {
-                log_error("Could not close the connection socket");
+                log_errorf("Could not close the connection socket");
             }
             connfd = 0;
 
@@ -111,19 +114,19 @@ int initialize_server(uint16_t port)
     connection_socket_addr.sin_port = htons(port);
     connection_socket_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    log_info("Creating the listening socket");
+    log_infof("Creating the listening socket");
     if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     {
-        log_error("Could not create listen socket");
+        log_errorf("Could not create listen socket");
         return SERVER_ERROR;
     }
 
     if (bind(listenfd, (struct sockaddr*)&connection_socket_addr, sizeof(connection_socket_addr)) == -1)
     {
-        log_error("Could not bind socket to port");
+        log_errorf("Could not bind socket to port");
         return SERVER_ERROR;
     }
-    log_info("The server is listening on port %u", port);
+    log_infof("The server is listening on port %u", port);
 
     return SERVER_SUCCESS;
 }
@@ -136,22 +139,22 @@ void stop_server()
     {
         if (close(listenfd) == -1)
         {
-            log_error("Could not close the listening socket");
+            log_errorf("Could not close the listening socket");
         }
         connfd = 0;
 
-        log_info("Closed the listening socket");
+        log_infof("Closed the listening socket");
     }
 
     if (connfd != 0)
     {
         if (close(connfd) == -1)
         {
-            log_error("Could not close the connection socket");
+            log_errorf("Could not close the connection socket");
         }
         connfd = 0;
 
-        log_info("Closed the connection socket");
+        log_infof("Closed the connection socket");
     }
 }
 
@@ -194,12 +197,17 @@ int receive_request(struct request* request)
     token = strtok(NULL, " ");
     sscanf(token, "HTTP/%u.%u", &request->version.major, &request->version.minor);
 
+    log_infof("Request:");
+    log_block();
+
     // Just read the rest of the request
     while (len > 0 && strcmp("\n", buf))
     {
         len = get_line(connfd, buf, buf_len);
-        log_info(buf);
+        log_info(buf, len);
     }
+
+    log_block_end();
 
     return SERVER_SUCCESS;
 }
