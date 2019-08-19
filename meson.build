@@ -5,7 +5,9 @@ sources = files([
     'src/server.c',
     'src/server.h',
     'src/logger.c',
-    'src/logger.h'
+    'src/logger.h',
+    'src/request.c',
+    'src/request.h'
 ])
 
 executable('shttp', sources)
