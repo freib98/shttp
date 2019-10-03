@@ -21,18 +21,16 @@ In order to debug shttp you need the [C/C++](https://marketplace.visualstudio.co
 
 ### Building the code
 
-This repository uses [meson](https://mesonbuild.com/) to build the project.
+This repository provides a bash script to build the binaries.
 
 ```
-$ meson build && cd build
-$ ninja
+$ ./tools/build.sh
 ```
 
-To debug shttp you must provide the build type.
+To debug shttp the build script accepts 'debug' as argument.
 
 ```
-$ meson --buildtype debug build && cd build
-$ ninja
+$ ./tools/build.sh debug
 ```
 
 ## Usage

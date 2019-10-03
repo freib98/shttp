@@ -19,7 +19,11 @@ function checkForToolChain {
 checkForToolChain
 
 if [ ! -d $BuildDir ]; then
-    if ! meson $BuildDir $ProjectDir; then
+    mesonargs=""
+
+    if [ "$1" = "debug" ]; then mesonargs+="--buildtype debug"; fi
+
+    if ! meson $BuildDir $ProjectDir $mesonargs; then
         echo "meson was not successfull"
         exit 1
     fi
