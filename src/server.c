@@ -140,23 +140,13 @@ void stop_server()
 {
     if (g_SHTTPConfig->listenfd != 0)
     {
-        if (close(g_SHTTPConfig->listenfd) == -1)
-        {
-            log_errorf("Could not close the listening socket");
-        }
+        close(g_SHTTPConfig->listenfd);
         connfd = 0;
-
-        log_infof("Closed the listening socket");
     }
 
     if (connfd != 0)
     {
-        if (close(connfd) == -1)
-        {
-            log_errorf("Could not close the connection socket");
-        }
+        close(connfd);
         connfd = 0;
-
-        log_infof("Closed the connection socket");
     }
 }
