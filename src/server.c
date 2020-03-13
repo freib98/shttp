@@ -13,6 +13,36 @@ SHTTPConfig* g_SHTTPConfig;
 int connfd;
 
 // Method Description:
+// - Creating and configurating the socket
+// Arguments:
+// - port: the port to configure the socket
+static int initialize_server(SHTTPConfig* shttpConfig)
+{
+    struct sockaddr_in connection_socket;
+    memset(&connection_socket, 0, sizeof(connection_socket));
+    connection_socket.sin_family = AF_INET;
+    connection_socket.sin_port = htons(shttpConfig->port);
+    connection_socket.sin_addr.s_addr = htonl(INADDR_ANY);
+
+    log_infof("Creating the listening socket");
+    if ((shttpConfig->listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+    {
+        log_errorf("Could not create listen socket");
+        return SERVER_ERROR;
+    }
+
+    if (bind(shttpConfig->listenfd, (struct sockaddr*)&connection_socket, sizeof(connection_socket)) == -1)
+    {
+        log_errorf("Could not bind socket to port");
+        return SERVER_ERROR;
+    }
+
+    log_infof("The server is listening on port %u", shttpConfig->port);
+
+    return SERVER_SUCCESS;
+}
+
+// Method Description:
 // - This is the main routine of the server. It initializes the
 //   socket, listens for connections, accepts them and sends
 //   a response
@@ -102,36 +132,6 @@ int run_server(SHTTPConfig* shttpConfig)
             break;
         }
     }
-}
-
-// Method Description:
-// - Creating and configurating the socket
-// Arguments:
-// - port: the port to configure the socket
-static int initialize_server(SHTTPConfig* shttpConfig)
-{
-    struct sockaddr_in connection_socket;
-    memset(&connection_socket, 0, sizeof(connection_socket));
-    connection_socket.sin_family = AF_INET;
-    connection_socket.sin_port = htons(shttpConfig->port);
-    connection_socket.sin_addr.s_addr = htonl(INADDR_ANY);
-
-    log_infof("Creating the listening socket");
-    if ((shttpConfig->listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-    {
-        log_errorf("Could not create listen socket");
-        return SERVER_ERROR;
-    }
-
-    if (bind(shttpConfig->listenfd, (struct sockaddr*)&connection_socket, sizeof(connection_socket)) == -1)
-    {
-        log_errorf("Could not bind socket to port");
-        return SERVER_ERROR;
-    }
-
-    log_infof("The server is listening on port %u", shttpConfig->port);
-
-    return SERVER_SUCCESS;
 }
 
 // Method Description:

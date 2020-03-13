@@ -11,5 +11,4 @@ typedef enum
 } server_error;
 
 int run_server(SHTTPConfig*);
-static int initialize_server(SHTTPConfig*);
 void stop_server();
