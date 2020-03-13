@@ -2,12 +2,14 @@
 
 #include <stdint.h>
 
+#include "internal.h"
+
 typedef enum
 {
     SERVER_SUCCESS,
     SERVER_ERROR
 } server_error;
 
-int run_server(uint16_t port);
-static int initialize_server(uint16_t port);
+int run_server(SHTTPConfig*);
+static int initialize_server(SHTTPConfig*);
 void stop_server();

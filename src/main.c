@@ -1,10 +1,11 @@
-#include "server.h"
-#include "logger.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+
+#include "internal.h"
+#include "logger.h"
+#include "server.h"
 
 // Method Description:
 // - Prints a help message to the stdout stream and exits the program
@@ -70,6 +71,12 @@ int main(int argc, char** argv)
 
     validate_args(argc, argv);
 
-    uint16_t port = port_arg_to_uint16(argv[1]);
-    run_server(port);
+    SHTTPConfig shttpConfig;
+    memset(&shttpConfig, 0, sizeof(shttpConfig));
+
+    shttpConfig.port = port_arg_to_uint16(argv[1]);
+
+    int result = run_server(&shttpConfig);
+
+    return result;
 }

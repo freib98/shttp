@@ -9,7 +9,7 @@
 #include <string.h>
 #include <unistd.h>
 
-int listenfd;
+SHTTPConfig* g_SHTTPConfig;
 int connfd;
 
 // Method Description:
@@ -18,14 +18,16 @@ int connfd;
 //   a response
 // Arguments:
 // - port: the port the socket is listening on
-int run_server(uint16_t port)
+int run_server(SHTTPConfig* shttpConfig)
 {
-    if (initialize_server(port) == SERVER_ERROR)
+    g_SHTTPConfig = shttpConfig;
+
+    if (initialize_server(shttpConfig) == SERVER_ERROR)
     {
         return SERVER_ERROR;
     }
 
-    if (listen(listenfd, 10) == -1)
+    if (listen(shttpConfig->listenfd, 10) == -1)
     {
         log_errorf("Could not start listen on socket");
     }
@@ -36,7 +38,7 @@ int run_server(uint16_t port)
         socklen_t client_addr_len;
 
         log_infof("Listening for connections...");
-        if ((connfd = accept(listenfd, &client_addr, &client_addr_len)) == -1)
+        if ((connfd = accept(shttpConfig->listenfd, &client_addr, &client_addr_len)) == -1)
         {
             log_errorf("Could not accept an incomming connection");
             return SERVER_ERROR;
@@ -106,27 +108,28 @@ int run_server(uint16_t port)
 // - Creating and configurating the socket
 // Arguments:
 // - port: the port to configure the socket
-static int initialize_server(uint16_t port)
+static int initialize_server(SHTTPConfig* shttpConfig)
 {
-    struct sockaddr_in connection_socket_addr;
-    memset(&connection_socket_addr, 0, sizeof(connection_socket_addr));
-    connection_socket_addr.sin_family = AF_INET;
-    connection_socket_addr.sin_port = htons(port);
-    connection_socket_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    struct sockaddr_in connection_socket;
+    memset(&connection_socket, 0, sizeof(connection_socket));
+    connection_socket.sin_family = AF_INET;
+    connection_socket.sin_port = htons(shttpConfig->port);
+    connection_socket.sin_addr.s_addr = htonl(INADDR_ANY);
 
     log_infof("Creating the listening socket");
-    if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+    if ((shttpConfig->listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     {
         log_errorf("Could not create listen socket");
         return SERVER_ERROR;
     }
 
-    if (bind(listenfd, (struct sockaddr*)&connection_socket_addr, sizeof(connection_socket_addr)) == -1)
+    if (bind(shttpConfig->listenfd, (struct sockaddr*)&connection_socket, sizeof(connection_socket)) == -1)
     {
         log_errorf("Could not bind socket to port");
         return SERVER_ERROR;
     }
-    log_infof("The server is listening on port %u", port);
+
+    log_infof("The server is listening on port %u", shttpConfig->port);
 
     return SERVER_SUCCESS;
 }
@@ -135,9 +138,9 @@ static int initialize_server(uint16_t port)
 // - Closing all active sockets.
 void stop_server()
 {
-    if (listenfd != 0)
+    if (g_SHTTPConfig->listenfd != 0)
     {
-        if (close(listenfd) == -1)
+        if (close(g_SHTTPConfig->listenfd) == -1)
         {
             log_errorf("Could not close the listening socket");
         }
